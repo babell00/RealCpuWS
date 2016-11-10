@@ -28,4 +28,4 @@ gulp
 Gulp will start server. Server can be accessed at http://localhost:3000
 
 ###Running client normally :P
-double click on index.html in web_client folder.
+Double click on index.html in web_client folder.
