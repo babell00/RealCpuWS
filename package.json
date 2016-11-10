@@ -1,0 +1,19 @@
+{
+  "name": "RealCpuWS",
+  "version": "0.0.1",
+  "main": "app.js",
+  "scripts": {
+  },
+  "author": "Jakub Gajzler",
+  "license": "ISC",
+  "description": "Application sends realtime cpu usage to connected clients over WebSocket connection",
+  "dependencies": {
+    "browser-sync": "^2.11.2",
+    "chart.js": "^2.3.0",
+    "gulp": "^3.9.1",
+    "hashmap": "^2.0.6",
+    "os-utils": "0.0.14",
+    "twitter": "^1.4.0",
+    "ws": "^1.1.1"
+  }
+}
