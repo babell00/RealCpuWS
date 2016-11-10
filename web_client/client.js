@@ -1,62 +1,76 @@
 'use strict';
-var labels = [];
-var data = [];
-var myChart1;
-var ctx1;
-var count = 0;
 
+var dataset = {labels: [], usage: []};
+
+var cpuBarChart;
+var ctx;
+
+//url pointing to WebSocket Server
+var wsUrl = 'ws://127.0.0.1:8080/'
+
+//init websocket connetion
 var init = function(){
-  console.log('kicked');
   if(!('WebSocket' in window)){
-    console.log('not supported');
+    console.log('WebSocket not supported');
   } else {
     connect();
-    function connect(){
-      try{
-        var socket = new WebSocket("ws://127.0.0.1:8080/");
-
-        socket.onopen = function(){
-          console.log('connected');
-        }
-
-        socket.onmessage = function(event){
-          if(event){
-            var res = JSON.parse(event.data);
-            for(var i = 0; i < res.length; i++){
-              data[i] = res[i].usage;
-              labels[i] = 'core : ' + res[i].core;
-            }
-            myChart1.update();
-            myChart2.update();
-          }
-        }
-
-        socket.onclose = function(){
-          console.log('closed');
-          connect();
-        }
-      } catch(exception) {
-        console.log(exception);
-      }
-
-    }
   }
 }
 
-window.addEventListener("load", init, false);
-create1();
+//attached socket to load event
+window.addEventListener("load", init, false)
+
+//function responsible for connectiong to WS
+function connect(){
+  try{
+    var socket = new WebSocket(wsUrl);
+
+    //when connection is established this event will be kicked
+    socket.onopen = function(){
+      console.log('Connected to ' + wsUrl);
+    }
+
+    //this function is executed when server send message
+    socket.onmessage = function(event){
+      if(event){
+        var res = JSON.parse(event.data);
+
+        for(var i = 0; i < res.length; i++){
+          dataset.usage[i] = (res[i].usage);
+          dataset.labels[i] = ('core : ' + res[i].core);
+        }
+
+        //update bar chart when new data/message is recived
+        cpuBarChart.update();
+      }
+    }
+
+    //kicked when connection is closed
+    socket.onclose = function(){
+      console.log('Connection closed');
+
+      //If connection is closed function below will try to reconnect.
+      connect();
+    }
+  } catch(exception) {
+    console.log(exception);
+  }
+}
+
+//Create Bar Chart
+createBarChart();
 
 
-function create1(){
-  ctx1 = document.getElementById("myChart1");
-  myChart1 = new Chart(ctx1, {
+function createBarChart(){
+  console.log(dataset);
+  ctx = document.getElementById("cpuBarChart");
+  cpuBarChart = new Chart(ctx, {
     type: 'bar',
-
     data: {
-      labels: labels,
+      labels: dataset.labels,
       datasets: [{
         label: 'CPU Load',
-        data: data,
+        data: dataset.usage,
         backgroundColor: [
           'rgba(255, 99, 132, 0.2)',
           'rgba(54, 162, 235, 0.2)',
