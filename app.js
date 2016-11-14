@@ -18,7 +18,7 @@ var wss = new WSS(port);
 var cpuUtils = new CpuUtils();
 
 
-wss.onConnection();
+wss.initWS();
 
 setInterval(() => {
   var cores = cpuUtils.getCoresUsage();
